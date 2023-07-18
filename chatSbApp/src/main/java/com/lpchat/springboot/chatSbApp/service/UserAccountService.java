@@ -16,6 +16,7 @@ public class UserAccountService {
     }
 
     public void saveUserAccount(UserAccount userAccount) {
+    	System.out.println(userAccount.toString());
         userAccountRepository.save(userAccount);
     }
     

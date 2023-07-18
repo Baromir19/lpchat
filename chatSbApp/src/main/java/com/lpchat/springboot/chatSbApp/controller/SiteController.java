@@ -11,7 +11,12 @@ import com.lpchat.springboot.chatSbApp.service.UserAccountService;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.lpchat.springboot.chatSbApp.configuration.AESUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,8 +68,7 @@ public class SiteController {
         model.addAttribute("lastname", currentUser.getLastname());
         model.addAttribute("firstname", currentUser.getFirstname());
         model.addAttribute("middlename", currentUser.getMiddlename());
-        //model.addAttribute("userId", currentUser.getId());
-        
+        model.addAttribute("currentUserId", currentUser.getId());        
         //List<ChatMessage> messages = chatMessageService.getAllMessages();
         //model.addAttribute("messages", messages);
         model.addAttribute("message", new ChatMessage());
@@ -72,16 +76,44 @@ public class SiteController {
     	return "chats";
     }
     
-    @PostMapping("/chats")
-    public String createMessage(@ModelAttribute ChatMessage message) {
+    @MessageMapping("/chats/message")
+    @SendTo("/chats/message")
+    public ChatMessage handleMessage(ChatMessage message) { //, Model model
+    	//UserAccount currentUser = (UserAccount) model.asMap().get("currentUserId");
     	
-        chatMessageService.addMessage(message);
-        
-        System.out.println("TEST MESSAGE");
-        System.out.println(message.getMessage_text());   
-        
-        return "redirect:/chats";
+        chatMessageService.addMessage(message, 23L); 
+    	/*
+        String encryptedMessage = AESUtil.encryptMessage(message.getMessage_text());
+        if (encryptedMessage != null) {
+            message.setMessage_text(encryptedMessage);
+            chatMessageService.addMessage(message, 23L);
+        }
+        */
+        return message;
     }
+    
+    @SubscribeMapping("/chats/message")
+    public String sendOneTimeMessage() {
+    	System.out.println("subscribe map");
+        return "server one-time message via the application";
+    }
+/*    public List<ChatMessage> getAllMessages() {
+    	System.out.println("all messages sended");
+    	
+        return chatMessageService.getAllMessages();
+    }*/
+    
+    /*
+    @PostMapping("/sendMessage")
+    public ResponseEntity<String> createMessage(@ModelAttribute ChatMessage message, Model model) {
+        Long currentUserId = (Long) model.getAttribute("currentUserId");
+        chatMessageService.addMessage(message, currentUserId); 
+        
+        //System.out.println((Long) model.getAttribute("currentUserId"));
+     
+        return ResponseEntity.ok("Message created");
+    }
+    */
     
     /*
     @GetMapping("/chats/{chat_id}")

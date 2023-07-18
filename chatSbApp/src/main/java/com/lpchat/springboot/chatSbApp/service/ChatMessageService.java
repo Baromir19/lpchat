@@ -1,9 +1,7 @@
 package com.lpchat.springboot.chatSbApp.service;
 
 import com.lpchat.springboot.chatSbApp.model.ChatMessage;
-import com.lpchat.springboot.chatSbApp.model.UserAccount;
 import com.lpchat.springboot.chatSbApp.repository.ChatMessageRepository;
-import com.lpchat.springboot.chatSbApp.repository.UserAccountRepository;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,8 +23,11 @@ public class ChatMessageService {
         return chatMessageRepository.findAll();
     }
     
-    public void addMessage(ChatMessage message) {
-        message.setTimestamp(new Timestamp(System.currentTimeMillis()));
+    public void addMessage(ChatMessage message, Long currentUserId) {
+  	   	message.setTimestamp(new Timestamp(System.currentTimeMillis()));
+  	   	message.setSenderId(currentUserId);
+  	   	//message.setId(2L);
+    	System.out.println(message.toString());
         chatMessageRepository.save(message);
     }
 

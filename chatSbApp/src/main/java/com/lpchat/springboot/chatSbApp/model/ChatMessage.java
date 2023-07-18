@@ -13,17 +13,23 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "messages_table")
-//@Access(AccessType.FIELD)
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//  @Access(AccessType.PROPERTY)
     @Column(name = "message_id")
     private Long messageId;
-	private Long chat_id;
-	private Long sender_id;
+    
+    @Column(name = "chat_id")
+	private Long chatId;
+    
+    @Column(name = "sender_id")
+	private Long senderId;
+    
+    @Column(name = "message_text")
     private String message_text;
-    private Timestamp timestamp;
+    
+    @Column(name = "message_timestamp")
+    private Timestamp messageTimestamp;
 
     public ChatMessage() {
 
@@ -31,33 +37,33 @@ public class ChatMessage {
 
     public ChatMessage(Long id, Long sender, String text, Timestamp timestamp) {
         this.messageId = id;
-        this.sender_id = sender;
+        this.senderId = sender;
         this.message_text = text;
-        this.timestamp = timestamp;
+        this.messageTimestamp = timestamp;
     }
 
-    public Long getMessageId() {
+    public Long getId() {
         return messageId;
     }
 
-    public void setMessageId(Long messageId) {
-        this.messageId = messageId;
+    public void setId(Long id) {
+        this.messageId = id;
     }
     
     public Long getChat_id() {
-		return chat_id;
+		return chatId;
 	}
 
 	public void setChat_id(Long chat_id) {
-		this.chat_id = chat_id;
+		this.chatId = chat_id;
 	}
 
-    public Long getSender_id() {
-        return sender_id;
+    public Long getSenderId() {
+        return senderId;
     }
 
-    public void setSender_id(Long sender_id) {
-        this.sender_id = sender_id;
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
     }
 
     public String getMessage_text() {
@@ -69,19 +75,19 @@ public class ChatMessage {
     }
 
     public Timestamp getTimestamp() {
-        return timestamp;
+        return messageTimestamp;
     }
 
     public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+        this.messageTimestamp = timestamp;
     }
     
     @Override
 	public String toString() {
-		return "ChatMessage [messageId=" + messageId 
-				+ ", chat_id=" + chat_id 
-				+ ", sender_id=" + sender_id
+		return "ChatMessage [id=" + messageId 
+				+ ", chat_id=" + chatId 
+				+ ", sender_id=" + senderId
 				+ ", message_text=" + message_text 
-				+ ", timestamp=" + timestamp + "]";
+				+ ", timestamp=" + messageTimestamp + "]";
 	}
 }
